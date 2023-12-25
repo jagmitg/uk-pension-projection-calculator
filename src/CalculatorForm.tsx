@@ -1,121 +1,224 @@
-import React from 'react';
-import { PensionProjectionState } from './interfaces';
+import React from "react";
+import { PensionProjectionState } from "./interfaces";
 
 interface CalculatorFormProps {
-  state: PensionProjectionState;
-  onValueChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  onCalculate: () => void;
+    state: PensionProjectionState;
+    onValueChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+    onCalculate: () => void;
 }
 
-export const CalculatorForm: React.FC<CalculatorFormProps> = ({
-  state,
-  onValueChange,
-  onCalculate,
-}) => {
-  return (
-    <form>
-      <label>
-        Current Age:
-        <input
-          type="number"
-          name="currentAge"
-          value={state.currentAge}
-          onChange={onValueChange}
-        />
-      </label>
-      <label>
-        Current Salary (£):
-        <input
-          type="number"
-          name="currentSalary"
-          value={state.currentSalary}
-          onChange={onValueChange}
-        />
-      </label>
-      <label>
-        Annual Bonus (£):
-        <input
-          type="number"
-          name="annualBonus"
-          value={state.annualBonus}
-          onChange={onValueChange}
-        />
-      </label>
-      <label>
-        % of Bonus to Add to Pension:
-        <input
-          type="number"
-          name="bonusContributionPct"
-          value={state.bonusContributionPct}
-          onChange={onValueChange}
-        />
-      </label>
-      <label>
-        Current Pension Pot (£):
-        <input
-          type="number"
-          name="currentPensionPot"
-          value={state.currentPensionPot}
-          onChange={onValueChange}
-        />
-      </label>
-      <label>
-        Retirement Age:
-        <input
-          type="number"
-          name="retirementAge"
-          value={state.retirementAge}
-          onChange={onValueChange}
-        />
-      </label>
-      <label>
-        Salary Growth (%):
-        <input
-          type="number"
-          name="salaryGrowth"
-          value={state.salaryGrowth}
-          onChange={onValueChange}
-        />
-      </label>
-      <label>
-        Employee Contribution (%):
-        <input
-          type="number"
-          name="employeeContributionPct"
-          value={state.employeeContributionPct}
-          onChange={onValueChange}
-        />
-      </label>
-      <label>
-        Employer Contribution (%):
-        <input
-          type="number"
-          name="employerContributionPct"
-          value={state.employerContributionPct}
-          onChange={onValueChange}
-        />
-      </label>
-      <label>
-        Avoid 40% Tax?
-        <input
-          type="checkbox"
-          name="avoid40Tax"
-          checked={state.avoid40Tax}
-          onChange={onValueChange}
-        />
-      </label>
-      <label>
-        Avoid £100k tax trap
-        <input
-          type="checkbox"
-          name="avoid100kTaxTrap"
-          checked={state.avoid100kTaxTrap}
-          onChange={onValueChange}
-        />
-      </label>
-      <button type="button" onClick={onCalculate}>
-        Calculate
-      </button>
-    </form>
-  );
+export const CalculatorForm: React.FC<CalculatorFormProps> = ({ state, onValueChange, onCalculate }) => {
+    return (
+        <form>
+            <div className="space-y-12">
+                <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
+                    <div className="sm:col-span-3">
+                        <label
+                            htmlFor="currentAge"
+                            className="block text-sm font-medium leading-6 text-gray-900"
+                        >
+                            Current Age
+                        </label>
+                        <div className="mt-2">
+                            <input
+                                type="number"
+                                name="currentAge"
+                                value={state.currentAge}
+                                onChange={onValueChange}
+                                className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                            />
+                        </div>
+                    </div>
+
+                    <div className="sm:col-span-3">
+                        <label
+                            htmlFor="currentSalary"
+                            className="block text-sm font-medium leading-6 text-gray-900"
+                        >
+                            Current Salary (£):
+                        </label>
+                        <div className="mt-2">
+                            <input
+                                type="number"
+                                name="currentSalary"
+                                value={state.currentSalary}
+                                onChange={onValueChange}
+                                className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                            />
+                        </div>
+                    </div>
+
+                    <div className="sm:col-span-3">
+                        <label
+                            htmlFor="annualBonus"
+                            className="block text-sm font-medium leading-6 text-gray-900"
+                        >
+                            Annual Bonus (£):
+                        </label>
+                        <div className="mt-2">
+                            <input
+                                type="number"
+                                name="annualBonus"
+                                value={state.annualBonus}
+                                onChange={onValueChange}
+                                className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                            />
+                        </div>
+                    </div>
+
+                    <div className="sm:col-span-3">
+                        <label
+                            htmlFor="bonusContributionPct"
+                            className="block text-sm font-medium leading-6 text-gray-900"
+                        >
+                            % of Bonus to Add to Pension:
+                        </label>
+                        <div className="mt-2">
+                            <input
+                                type="number"
+                                name="bonusContributionPct"
+                                value={state.bonusContributionPct}
+                                onChange={onValueChange}
+                                className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                            />
+                        </div>
+                    </div>
+
+                    <div className="sm:col-span-3">
+                        <label
+                            htmlFor="currentPensionPot"
+                            className="block text-sm font-medium leading-6 text-gray-900"
+                        >
+                            Current Pension Pot (£):
+                        </label>
+                        <div className="mt-2">
+                            <input
+                                type="number"
+                                name="currentPensionPot"
+                                value={state.currentPensionPot}
+                                onChange={onValueChange}
+                                className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                            />
+                        </div>
+                    </div>
+
+                    <div className="sm:col-span-3">
+                        <label
+                            htmlFor="retirementAge"
+                            className="block text-sm font-medium leading-6 text-gray-900"
+                        >
+                            Retirement Age:
+                        </label>
+                        <div className="mt-2">
+                            <input
+                                type="number"
+                                name="retirementAge"
+                                value={state.retirementAge}
+                                onChange={onValueChange}
+                                className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                            />
+                        </div>
+                    </div>
+
+                    <div className="sm:col-span-3">
+                        <label
+                            htmlFor="salaryGrowth"
+                            className="block text-sm font-medium leading-6 text-gray-900"
+                        >
+                            Salary Growth (%):
+                        </label>
+                        <div className="mt-2">
+                            <input
+                                type="number"
+                                name="salaryGrowth"
+                                value={state.salaryGrowth}
+                                onChange={onValueChange}
+                                className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                            />
+                        </div>
+                    </div>
+
+                    <div className="sm:col-span-3">
+                        <label
+                            htmlFor="employeeContributionPct"
+                            className="block text-sm font-medium leading-6 text-gray-900"
+                        >
+                            Employee Contribution (%):
+                        </label>
+                        <div className="mt-2">
+                            <input
+                                type="number"
+                                name="employeeContributionPct"
+                                value={state.employeeContributionPct}
+                                onChange={onValueChange}
+                                className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                            />
+                        </div>
+                    </div>
+
+                    <div className="sm:col-span-3">
+                        <label
+                            htmlFor="employerContributionPct"
+                            className="block text-sm font-medium leading-6 text-gray-900"
+                        >
+                            Employer Contribution (%):
+                        </label>
+                        <div className="mt-2">
+                            <input
+                                type="number"
+                                name="employerContributionPct"
+                                value={state.employerContributionPct}
+                                onChange={onValueChange}
+                                className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                            />
+                        </div>
+                    </div>
+
+                    <div className="sm:col-span-3">
+                        <label
+                            htmlFor="avoid40Tax"
+                            className="block text-sm font-medium leading-6 text-gray-900"
+                        >
+                            Avoid 40% Tax?
+                        </label>
+                        <div className="mt-2">
+                            <input
+                                type="checkbox"
+                                name="avoid40Tax"
+                                checked={state.avoid40Tax}
+                                onChange={onValueChange}
+                            />
+                        </div>
+                    </div>
+
+                    <div className="sm:col-span-3">
+                        <label
+                            htmlFor="avoid100kTaxTrap"
+                            className="block text-sm font-medium leading-6 text-gray-900"
+                        >
+                            Avoid £100k tax trap
+                        </label>
+                        <div className="mt-2">
+                            <input
+                                type="checkbox"
+                                name="avoid100kTaxTrap"
+                                checked={state.avoid100kTaxTrap}
+                                onChange={onValueChange}
+                            />
+                        </div>
+                    </div>
+
+                    <div className="mt-4">
+                        <button
+                            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                            type="button"
+                            onClick={onCalculate}
+                        >
+                            Calculate
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    );
 };
