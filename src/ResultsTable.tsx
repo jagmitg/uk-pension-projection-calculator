@@ -1,11 +1,25 @@
-import React from "react";
+import React, { useState } from "react";
 import { PensionProjectionResult } from "./interfaces";
+import { GrowthModal } from "./GrowthModal";
 
 interface ResultsTableProps {
     results: PensionProjectionResult[];
 }
 
 export const ResultsTable: React.FC<ResultsTableProps> = ({ results }) => {
+    const [selectedResult, setSelectedResult] = useState<PensionProjectionResult | null>(null);
+    const [showModal, setShowModal] = useState(false);
+
+    const handleRowClick = (result: PensionProjectionResult) => {
+        setSelectedResult(result);
+        setShowModal(true);
+    };
+
+    const handleCloseModal = () => {
+        setShowModal(false);
+        setSelectedResult(null);
+    };
+
     return (
         <div className="overflow-x-auto">
             <h2 className="text-xl font-semibold mb-4">Projection Results</h2>
@@ -25,7 +39,11 @@ export const ResultsTable: React.FC<ResultsTableProps> = ({ results }) => {
                 </thead>
                 <tbody>
                     {results.map((result, index) => (
-                        <tr className="border-b" key={index}>
+                        <tr
+                            key={index}
+                            className="border-b hover:bg-gray-100 cursor-pointer"
+                            onClick={() => handleRowClick(result)}
+                        >
                             <td className="p-4 text-gray-700">{result.age}</td>
                             <td className="p-4 text-gray-700">
                                 £
@@ -87,6 +105,9 @@ export const ResultsTable: React.FC<ResultsTableProps> = ({ results }) => {
                     ))}
                 </tbody>
             </table>
+            {selectedResult && (
+                <GrowthModal show={showModal} onClose={handleCloseModal} data={selectedResult} />
+            )}
         </div>
     );
 };
