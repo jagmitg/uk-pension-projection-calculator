@@ -22,7 +22,6 @@ const PensionProjectionCalculator: React.FC = () => {
         avoid100kTaxTrap: false
     };
 
-    // Initialize state and load from local storage if available
     const [state, setState] = useState<PensionProjectionState>(() => {
         const localData = localStorage.getItem("pensionState");
         return localData ? JSON.parse(localData) : initialState;
@@ -30,7 +29,6 @@ const PensionProjectionCalculator: React.FC = () => {
 
     const [results, setResults] = useState<PensionProjectionResult[]>([]);
 
-    // Save to local storage on state change
     useEffect(() => {
         localStorage.setItem("pensionState", JSON.stringify(state));
     }, [state]);
@@ -44,13 +42,13 @@ const PensionProjectionCalculator: React.FC = () => {
     };
 
     const calculatePensionProjections = () => {
-        const {
+        let {
             currentAge,
             retirementAge,
-            currentSalary: initialSalary,
+            currentSalary,
             employeeContributionPct,
             employerContributionPct,
-            currentPensionPot: initialPensionPot,
+            currentPensionPot,
             salaryGrowth,
             annualBonus,
             bonusContributionPct,
@@ -58,48 +56,109 @@ const PensionProjectionCalculator: React.FC = () => {
             avoid100kTaxTrap
         } = state;
 
+        // Convert percentage inputs to decimals
+        employeeContributionPct /= 100;
+        employerContributionPct /= 100;
+        bonusContributionPct /= 100;
+        salaryGrowth /= 100;
+
+        // Validate inputs
+        if (currentAge < 16 || currentAge > 100) {
+            alert("Your age should be between 16-100");
+            return;
+        }
+
+        if (retirementAge < currentAge || retirementAge > 100) {
+            alert("Your retirement age should be after your current age and not more than 100");
+            return;
+        }
+
+        if (currentSalary < 0) {
+            alert("You can't have a negative salary!");
+            return;
+        } else if (currentSalary > 10000000) {
+            alert("Salary above £10mil... really?!");
+            return;
+        }
+
+        if (employeeContributionPct < 0 || employeeContributionPct > 1) {
+            alert("Employee Contribution % must be between 0-100.");
+            return;
+        }
+
+        if (employerContributionPct < 0 || employerContributionPct > 1) {
+            alert("Employer Contribution % must be between 0-100.");
+            return;
+        }
+
+        if (currentPensionPot < 0) {
+            alert("You can't have a negative pension pot!");
+            return;
+        } else if (currentPensionPot > 50000000) {
+            alert("Pension pot above £50mil... really?!");
+            return;
+        }
+
+        if (salaryGrowth > 1) {
+            alert("Your salary growth is highly unlikely to more than double every year!");
+            return;
+        }
+
+        if (isNaN(annualBonus)) {
+            annualBonus = 0;
+        }
+
+        if (bonusContributionPct < 0 || bonusContributionPct > 1) {
+            alert("Bonus Contribution % must be between 0-100.");
+            return;
+        }
+
         if (avoid40Tax && avoid100kTaxTrap) {
             alert("Please select only one option between 'Avoid 40% Tax' and 'Avoid £100k tax trap'.");
             return;
         }
 
-        let pensionProjectionResults: PensionProjectionResult[] = [];
-        let currentPensionPot = initialPensionPot;
-        let currentSalary = initialSalary;
+        let pensionProjectionResults = [];
+        let twoPercentGrowth = currentPensionPot;
+        let fourPercentGrowth = currentPensionPot;
+        let sixPercentGrowth = currentPensionPot;
 
         for (let age = currentAge; age <= retirementAge; age++) {
             if (age !== currentAge) {
-                currentSalary *= 1 + salaryGrowth / 100;
+                currentSalary *= 1 + salaryGrowth;
             }
 
-            let employeeContributionVal = (currentSalary * employeeContributionPct) / 100;
-            let employerContributionVal = (currentSalary * employerContributionPct) / 100;
+            let employeeContributionVal = currentSalary * employeeContributionPct;
+            let employerContributionVal = currentSalary * employerContributionPct;
 
-            let bonusContributionVal = (annualBonus * bonusContributionPct) / 100;
+            let bonusContributionVal = annualBonus * bonusContributionPct;
             employeeContributionVal += bonusContributionVal;
 
-            if (avoid40Tax && currentSalary > INCOME_THRESHOLD_40_PCT) {
-                let taxableIncome = currentSalary + annualBonus - employeeContributionVal;
-                if (taxableIncome > INCOME_THRESHOLD_40_PCT) {
-                    employeeContributionVal += taxableIncome - INCOME_THRESHOLD_40_PCT;
-                }
+            if (
+                avoid40Tax &&
+                currentSalary + annualBonus - employeeContributionVal > INCOME_THRESHOLD_40_PCT
+            ) {
+                employeeContributionVal = currentSalary + annualBonus - INCOME_THRESHOLD_40_PCT;
             }
 
-            if (avoid100kTaxTrap && currentSalary > TAX_TRAP_THRESHOLD) {
-                let taxableIncome = currentSalary + annualBonus - employeeContributionVal;
-                if (taxableIncome > TAX_TRAP_THRESHOLD) {
-                    employeeContributionVal += taxableIncome - TAX_TRAP_THRESHOLD;
-                }
+            if (
+                avoid100kTaxTrap &&
+                currentSalary + annualBonus - employeeContributionVal > TAX_TRAP_THRESHOLD
+            ) {
+                employeeContributionVal = currentSalary + annualBonus - TAX_TRAP_THRESHOLD;
             }
 
             let totalContributions = employeeContributionVal + employerContributionVal;
 
             if (totalContributions > MAX_CONTRIBUTIONS) {
-                totalContributions = MAX_CONTRIBUTIONS;
                 employeeContributionVal = MAX_CONTRIBUTIONS - employerContributionVal;
+                totalContributions = MAX_CONTRIBUTIONS;
             }
 
             currentPensionPot += totalContributions;
+            twoPercentGrowth = twoPercentGrowth * 1.02 + totalContributions;
+            fourPercentGrowth = fourPercentGrowth * 1.04 + totalContributions;
+            sixPercentGrowth = sixPercentGrowth * 1.06 + totalContributions;
 
             pensionProjectionResults.push({
                 age,
@@ -108,9 +167,9 @@ const PensionProjectionCalculator: React.FC = () => {
                 employerContributionVal,
                 totalContributions,
                 updatedPensionPot: currentPensionPot,
-                twoPercentGrowth: currentPensionPot * 1.02,
-                fourPercentGrowth: currentPensionPot * 1.04,
-                sixPercentGrowth: currentPensionPot * 1.06
+                twoPercentGrowth,
+                fourPercentGrowth,
+                sixPercentGrowth
             });
         }
 
