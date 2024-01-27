@@ -27,11 +27,24 @@ const PensionProjectionCalculator: React.FC = () => {
         return localData ? JSON.parse(localData) : initialState;
     });
 
+    const [isSidebarVisible, setIsSidebarVisible] = useState(() => {
+        const saved = localStorage.getItem("sidebarVisible");
+        return saved === null ? true : saved === "true";
+    });
+
     const [results, setResults] = useState<PensionProjectionResult[]>([]);
 
     useEffect(() => {
         localStorage.setItem("pensionState", JSON.stringify(state));
     }, [state]);
+
+    useEffect(() => {
+        localStorage.setItem("sidebarVisible", isSidebarVisible.toString());
+    }, [isSidebarVisible]);
+
+    const toggleSidebar = () => {
+        setIsSidebarVisible(!isSidebarVisible);
+    };
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
         const { name, value, type, checked } = e.target;
@@ -183,28 +196,38 @@ const PensionProjectionCalculator: React.FC = () => {
     };
 
     return (
-        <div className="flex h-screen">
-            <div className="w-1/4 bg-gray-200 p-4">
-                <CalculatorForm
-                    state={state}
-                    onValueChange={handleChange}
-                    onCalculate={calculatePensionProjections}
-                />
+        <div className="flex flex-col md:flex-row h-screen">
+            {isSidebarVisible && (
+                <div className="w-full md:w-1/4 bg-gray-200 p-4">
+                    <CalculatorForm
+                        state={state}
+                        onValueChange={handleChange}
+                        onCalculate={calculatePensionProjections}
+                    />
 
-                <div className="mt-4">
-                    <button
-                        className="bg-red-700 hover:bg-red-900 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-                        type="button"
-                        onClick={handleClearLocalStorage}
-                    >
-                        Clear info
-                    </button>
+                    <div className="mt-4">
+                        <button
+                            className="bg-red-700 hover:bg-red-900 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                            type="button"
+                            onClick={handleClearLocalStorage}
+                        >
+                            Clear info
+                        </button>
+                    </div>
                 </div>
-            </div>
+            )}
 
-            <div className="w-3/4 bg-gray-100 p-4">
+            <div className={`w-full ${isSidebarVisible ? "md:w-3/4" : "md:w-full"} bg-gray-100 p-4`}>
                 <ResultsTable results={results} />
             </div>
+
+            <button
+                onClick={toggleSidebar}
+                className="absolute top-4 right-4 md:top-auto md:right-auto md:bottom-4 md:left-4 z-10 bg-blue-500 text-white p-2 rounded"
+                aria-label="Toggle sidebar"
+            >
+                {isSidebarVisible ? "Hide Sidebar" : "Show Sidebar"}
+            </button>
         </div>
     );
 };
