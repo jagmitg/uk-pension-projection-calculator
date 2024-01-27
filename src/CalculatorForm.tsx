@@ -10,7 +10,7 @@ interface CalculatorFormProps {
 export const CalculatorForm: React.FC<CalculatorFormProps> = ({ state, onValueChange, onCalculate }) => {
     return (
         <>
-            <h2 className="text-xl font-semibold mb-4">Projection Results</h2>
+            <h2 className="text-xl font-semibold mb-4">Pension Projection Calculator</h2>
 
             <form>
                 <div className="space-y-12">
